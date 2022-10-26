@@ -29,6 +29,8 @@ export function displayAddPage(req, res, next) {
     /*****************
     * ADD CODE HERE *
     *****************/
+
+   // render book add page
      res.render('index', {title: 'Add Book', page: 'books/add', book: {}});
 }
 
@@ -38,7 +40,7 @@ export function processAddPage(req, res, next) {
     /*****************
      * ADD CODE HERE *
      *****************/
-    // create new book object
+    // new book object with properties from form submission
     let newBook = booksModel({
         name: req.body.name,
         author: req.body.author,
@@ -46,11 +48,13 @@ export function processAddPage(req, res, next) {
         description: req.body.description,
         price: req.body.price
     });
+    // create new book object
     booksModel.create(newBook, (err, Book) => {
         if(err){
             console.error(err);
             res.end(err);
         };
+        // redirect to book list when its done
         res.redirect('/books/list');
     })
 }
@@ -62,13 +66,17 @@ export function displayEditPage(req, res, next) {
      * ADD CODE HERE *
      *****************/
     
+    // retreive id
     let id = req.params.id;
 
+    // find the book using id
     booksModel.findById(id, (err, book) => {
+        // if there is error
         if(err){
             console.error(err);
             res.end(err);
-        }
+        };
+        // else render edit page and show book info
         res.render('index', {title: 'Edit Book', page: 'books/edit', book: book});
     });
 };
@@ -82,7 +90,7 @@ export function processEditPage(req, res, next) {
     //retrieve id
     let id = req.params.id;
 
-    // create new book
+    // create new book using info from form submission
     let updatedBook = ({
         name: req.body.name,
         author: req.body.author,
@@ -93,12 +101,13 @@ export function processEditPage(req, res, next) {
 
     // find the book by id and update it with new book object
     booksModel.findByIdAndUpdate({_id: id}, updatedBook, (err, Book) => {
+        // if there is error
         if(err){
             console.error(err);
             res.end(err);
         };
-        res.redirect('/books/list');
-        
+        // otherwise redirect to book list page
+        res.redirect('/books/list');  
     });
 };
 
@@ -107,12 +116,17 @@ export function processDelete(req, res, next) {
     /*****************
     * ADD CODE HERE *
     *****************/
-   let id = req.params.id;
-   booksModel.remove({_id: id}, (err) => {
-    if(err){
-        console.error(err);
-        res.end(err);
-    };
-    res.redirect('/books/list');
-   })
-}
+
+    // retrieve book id
+    let id = req.params.id;
+    // remove book using id
+    booksModel.remove({_id: id}, (err) => {
+        // if there is error
+        if(err){
+            console.error(err);
+            res.end(err);
+        };
+        // if no error redirect to book list
+        res.redirect('/books/list');
+    });
+};
