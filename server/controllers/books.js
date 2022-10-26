@@ -38,6 +38,7 @@ export function processAddPage(req, res, next) {
     /*****************
      * ADD CODE HERE *
      *****************/
+    // create new book object
     let newBook = booksModel({
         name: req.body.name,
         author: req.body.author,
@@ -60,7 +61,7 @@ export function displayEditPage(req, res, next) {
     /*****************
      * ADD CODE HERE *
      *****************/
-    // retrieve book id
+    
     let id = req.params.id;
 
     booksModel.findById(id, (err, book) => {
@@ -77,23 +78,28 @@ export function processEditPage(req, res, next) {
     /*****************
     * ADD CODE HERE *
     *****************/
-    // retrieve book id
-    // let id = req.params.id;
-    // let newBook = booksModel({
-    //     _id: req.body.id,
-    //     author: req.body.author,
-    //     published: req.body.published,
-    //     description: req.body.description,
-    //     price: req.body.price
-    // });
+    
+    //retrieve id
+    let id = req.params.id;
 
-    // booksModel.updateOne({_id: id}, newBook, (err, Book) => {
-    //     if(err){
-    //         console.error(err);
-    //         res.end(err);
-    //     };
-    //     res.redirect('/books/list');
-    // });
+    // create new book
+    let updatedBook = ({
+        name: req.body.name,
+        author: req.body.author,
+        published: req.body.published,
+        description: req.body.description,
+        price: req.body.price
+    });
+
+    // find the book by id and update it with new book object
+    booksModel.findByIdAndUpdate({_id: id}, updatedBook, (err, Book) => {
+        if(err){
+            console.error(err);
+            res.end(err);
+        };
+        res.redirect('/books/list');
+        
+    });
 };
 
 // GET - process the delete by user id
